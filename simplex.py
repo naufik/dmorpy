@@ -81,21 +81,18 @@ class LinearProgram:
 		[i.expand(maxl - len(i.getVector())) for i in self.__constraints]
 
 	def canonical(self):
-		for k in self.__constraints:
-			self.__makeCanonical(k);
-	
-	def __makeCanonical(self,const):
 		numconst = len(self.__constraints)
 		for i in range(numconst):
 			self.__constraints[i].addSlack(i,numconst)
 			self.__constraints[i].setType("e")
 
 	def printProg(self):
-		print(self.__mapping.getVector())
+		print("max z = " + " + ".join([str(i) for i in self.__mapping.getVector()]))
 		for c in self.__constraints:
 			c.print()
 
-x = LinearProgram(LinearMapping(4,-2,0,1),LinearConstraint("l",(0,1,0,0),32),LinearConstraint("l",(0,9,2,3),44))
+x = LinearProgram(LinearMapping(4,-2,0,1),LinearConstraint("l",(0,1,0,0),32),LinearConstraint("l",(0,9,2,3),44), LinearConstraint("l",(3,0,0,1),6))
 x.printProg()
 x.canonical()
+print(" ")
 x.printProg()
