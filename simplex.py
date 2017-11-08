@@ -58,8 +58,11 @@ class LinearConstraint:
 		return None
 
 	def addSlack(self, index, numconst):
-		self.__cv = self.__cv + tuple([1 if i == index else 0 for i in range(numconst)])
+		sgn = -1 if self.__itype == "g" else 1
+		self.__cv = self.__cv + tuple([sgn if i == index else 0 for i in range(numconst)])
 		return None
+	def getRHS(self):
+		return self.__rhs
 
 class LinearProgram:
 	__mapping = None
@@ -76,10 +79,11 @@ class LinearProgram:
 		pass
 		if type(f) == LinearMapping:
 			self.__mapping = f
+		self.normalize()
 
-		#Now we normalize
+	def normalize(self):
 		maxl = max([len(i.getVector()) for i in self.__constraints] + [self.__mapping.getDimensions()])
-		self.__mapping.expand(maxl - self.__mapping.getDimensions())
+		self.__mapping.expand(maxl)
 		[i.expand(maxl - len(i.getVector())) for i in self.__constraints]
 
 	def canonical(self):
@@ -87,9 +91,31 @@ class LinearProgram:
 		for i in range(numconst):
 			self.__constraints[i].addSlack(i,numconst)
 			self.__constraints[i].setType("e")
+		self.__canon = True
+		self.normalize()
+
+	def isCanonical(self):
+		return self.__canon
 
 	def printProg(self):
 		print("max z = " + " + ".join([str(i) for i in self.__mapping.getVector()]))
 		for c in self.__constraints:
 			c.print()
 
+	def getMapping(self):
+		return self.__mapping
+
+	def getConstraints(self):
+		return [k for k in self.__constraints]
+
+
+
+def simplex(program):
+	if not program.isCanonical():
+		program.canonical()
+	flattenedConstraints = [a for a in [list(c.getVector()) + [c.getRHS()] for c in program.getConstraints()]]
+	A = numpy.matrix(flattenedConstraints + [list(program.getMapping().getVector()) + [0]])
+	print(A)
+
+l = LinearProgram(LinearMapping(1/4,5/4),LinearConstraint("l",(1,1), 4),LinearConstraint("l",(1,0),0.5))
+simplex(l)
