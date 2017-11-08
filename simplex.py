@@ -65,6 +65,8 @@ class LinearProgram:
 	__mapping = None
 	__canon = False
 	__constraints = []
+	__slacks = ()
+	__artificials = ()
 
 	def __init__(self, f, *constraints):
 		#First initialize the constraints and the things
@@ -91,8 +93,3 @@ class LinearProgram:
 		for c in self.__constraints:
 			c.print()
 
-x = LinearProgram(LinearMapping(4,-2,0,1),LinearConstraint("l",(0,1,0,0),32),LinearConstraint("l",(0,9,2,3),44), LinearConstraint("l",(3,0,0,1),6))
-x.printProg()
-x.canonical()
-print(" ")
-x.printProg()
