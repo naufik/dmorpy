@@ -111,11 +111,23 @@ class LinearProgram:
 
 
 def simplex(program):
+	def pivot(co, cost, rhs, fxc):
+		pass
 	if not program.isCanonical():
 		program.canonical()
-	flattenedConstraints = [a for a in [list(c.getVector()) + [c.getRHS()] for c in program.getConstraints()]]
-	A = numpy.matrix(flattenedConstraints + [list(program.getMapping().getVector()) + [0]])
-	print(A)
+	flattenedConstraints = [a for a in [list(c.getVector()) for c in program.getConstraints()]]
+
+	#initialization of the important matrices
+	coefficients = numpy.matrix(flattenedConstraints)
+	cost = -numpy.matrix(list(program.getMapping().getVector()))
+	rhs = numpy.matrix([c.getRHS() for c in program.getConstraints()]).transpose()
+	fxc = 0
+
+	#start pivoting
+	if numpy.argwhere(cost < 0).shape != (0,0):
+		col = numpy.argwhere(cost == min(cost.A[0]))[0][1]
+		rats = (rhs / coefficients[:,col])
+		print(rats)
 
 l = LinearProgram(LinearMapping(1/4,5/4),LinearConstraint("l",(1,1), 4),LinearConstraint("l",(1,0),0.5))
 simplex(l)
