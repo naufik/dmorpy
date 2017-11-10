@@ -131,3 +131,4 @@ def simplex(program):
 
 l = LinearProgram(LinearMapping(1/4,5/4),LinearConstraint("l",(1,1), 4),LinearConstraint("l",(1,0),0.5))
 simplex(l)
+l.printProg()
