@@ -126,9 +126,12 @@ def simplex(program):
 	#start pivoting
 	if numpy.argwhere(cost < 0).shape != (0,0):
 		col = numpy.argwhere(cost == min(cost.A[0]))[0][1]
-		rats = (rhs / coefficients[:,col])
-		print(rats)
+		#do the ratio test
+		for i in range(len(s.A[0]):
+
+			rats = (rhs / coefficients[:,col]
+
+		print(rhs)
 
 l = LinearProgram(LinearMapping(1/4,5/4),LinearConstraint("l",(1,1), 4),LinearConstraint("l",(1,0),0.5))
 simplex(l)
-l.printProg()
