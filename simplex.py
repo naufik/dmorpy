@@ -1,13 +1,14 @@
+from typing import Tuple, Dict, List
 import numpy
 
 class LinearMapping:
 	__cv = ()
-	def __init__(self, *coefficients):
+	def __init__(self, *coefficients: float):
 		for item in coefficients:
 			self.__cv = self.__cv + (item,)
 		return None
 
-	def apply(self, vector):
+	def apply(self, vector: Tuple[float]):
 		if len(self) != len(vector):
 			print("Invalid Dimension")
 			return None
@@ -19,7 +20,7 @@ class LinearMapping:
 	def getDimensions(self):
 		return len(self.__cv)
 
-	def expand(self, newdim):
+	def expand(self, newdim: int ):
 		self.__cv = self.__cv + (0,) * (newdim - len(self.__cv))
 		return None
 
@@ -29,7 +30,7 @@ class LinearConstraint:
 	__itype = 'e'
 	__cv = ()
 	__rhs = None
-	def __init__(self, t, coefficients, rhs):
+	def __init__(self, t: str, coefficients: Tuple[float], rhs: float):
 		if t in ('e', 'g', 'l'): 
 			self.__itype = t
 		else:
@@ -46,18 +47,18 @@ class LinearConstraint:
 	def getType(self):
 		return self.__itype
 
-	def setType(self, newtype):
+	def setType(self, newtype: str):
 		if newtype in ("e","g","l"):
 			self.__itype = newtype
 
 	def print(self):
 		print(" + ".join([str(self.__cv[i]) + "x_{0}".format(i) for i in range(len(self.__cv))]) + " " + self.__TYPEDICT[self.__itype] + " " + str(self.__rhs))
 
-	def expand(self, newdim):
+	def expand(self, newdim: int):
 		self.__cv = self.__cv + (0,) * (newdim - len(self.__cv))
 		return None
 
-	def addSlack(self, index, numconst):
+	def addSlack(self, index: int, numconst: int):
 		sgn = -1 if self.__itype == "g" else 1
 		self.__cv = self.__cv + tuple([sgn if i == index else 0 for i in range(numconst)])
 		return None
@@ -71,7 +72,7 @@ class LinearProgram:
 	__slacks = ()
 	__artificials = ()
 
-	def __init__(self, f, *constraints):
+	def __init__(self, f, *constraints: LinearConstraint):
 		#First initialize the constraints and the things
 		for c in constraints:
 			if type(c) == LinearConstraint:
@@ -110,7 +111,7 @@ class LinearProgram:
 
 
 
-def simplex(program):
+def simplex(program: LinearProgram):
 	def pivot(co, cost, rhs, fxc):
 		pass
 	if not program.isCanonical():
@@ -127,9 +128,9 @@ def simplex(program):
 	if numpy.argwhere(cost < 0).shape != (0,0):
 		col = numpy.argwhere(cost == min(cost.A[0]))[0][1]
 		#do the ratio test
-		for i in range(len(s.A[0]):
+		for i in range(len(rhs.A[0])):
 
-			rats = (rhs / coefficients[:,col]
+			rats = (rhs / coefficients[:,col])
 
 		print(rhs)
 
