@@ -1,4 +1,4 @@
-from typing import Tuple, Dict, List
+from typing import *
 import numpy
 
 class LinearMapping:
@@ -20,7 +20,7 @@ class LinearMapping:
 	def getDimensions(self):
 		return len(self.__cv)
 
-	def expand(self, newdim: int ):
+	def expand(self, newdim: int):
 		self.__cv = self.__cv + (0,) * (newdim - len(self.__cv))
 		return None
 
@@ -62,6 +62,7 @@ class LinearConstraint:
 		sgn = -1 if self.__itype == "g" else 1
 		self.__cv = self.__cv + tuple([sgn if i == index else 0 for i in range(numconst)])
 		return None
+		
 	def getRHS(self):
 		return self.__rhs
 
@@ -72,7 +73,7 @@ class LinearProgram:
 	__slacks = ()
 	__artificials = ()
 
-	def __init__(self, f, *constraints: LinearConstraint):
+	def __init__(self, f: LinearMapping, *constraints: LinearConstraint):
 		#First initialize the constraints and the things
 		for c in constraints:
 			if type(c) == LinearConstraint:
@@ -112,8 +113,6 @@ class LinearProgram:
 
 
 def simplex(program: LinearProgram):
-	def pivot(co, cost, rhs, fxc):
-		pass
 	if not program.isCanonical():
 		program.canonical()
 	flattenedConstraints = [a for a in [list(c.getVector()) for c in program.getConstraints()]]
